@@ -28,12 +28,11 @@ st.write(input_df)
 if st.button('Predict'):
     api_url = "http://127.0.0.1:5000/predict"
     input_data = input_df.values.tolist()[0]
-    try:
-        response = requests.post(api_url, json={'data': input_data})
-        response.raise_for_status()  # Raise HTTPError for bad responses
+    response = requests.post(api_url, json={'data': input_data})
+    if response.status_code == 200:
         prediction = response.json()['prediction']
         st.subheader('Prediction')
         st.write(prediction)
-    except requests.exceptions.RequestException as e:
+    else:
         st.subheader('Error')
-        st.write(f"An error occurred: {e}")
+        st.write(response.json())
